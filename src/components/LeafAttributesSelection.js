@@ -25,7 +25,7 @@ const LeafAttributesSelection = () => {
   const [selectedValue, setSelectedValue] = useState(null);
   const [count, setCount] = useState(0);
   const [open, setOpen] = useState(false);
-  const [possibleData, setPossibleData] = useState([]);
+  const [possibleData, setPossibleData] = useState([]); // State for possible data
 
   const attributes = selectedLeafType === 'Leaf (Simple)' 
     ? [
@@ -73,6 +73,7 @@ const LeafAttributesSelection = () => {
 
   const handleNext = () => {
     if (selectedValue) {
+      // Filter possible data and set it
       const filteredForNextStep = filteredData.filter(
         ([, details]) => details[currentAttribute.key] === selectedValue
       );
@@ -81,6 +82,11 @@ const LeafAttributesSelection = () => {
         ...selectedAttributes,
         [currentAttribute.label]: selectedValue,
       };
+
+      const filteredPossibleData = filteredData.filter(
+        ([, details]) => details[currentAttribute.key] === selectedValue
+      );
+      setPossibleData(filteredPossibleData); // Set the possible data
 
       if (currentAttributeIndex < attributes.length - 1) {
         navigate('/leaf-attributes-selection', { 
@@ -92,11 +98,12 @@ const LeafAttributesSelection = () => {
           } 
         });
       } else {
+        // Pass possibleData to FinalLeafSelection
         navigate('/final-leaf-selection', { 
           state: { 
             finalFilteredData: filteredForNextStep, 
             selectedAttributes: updatedSelectedAttributes,
-            possibleData // Pass possibleData to FinalLeafSelection
+            possibleData: filteredPossibleData // Pass this data to the next page
           } 
         });
       }
@@ -107,11 +114,12 @@ const LeafAttributesSelection = () => {
 
   const handleShowPossibleData = () => {
     if (selectedValue) {
+      // Filter possible data for the current step
       const filteredPossibleData = filteredData.filter(
         ([, details]) => details[currentAttribute.key] === selectedValue
       );
-      setPossibleData(filteredPossibleData);
-      setOpen(true);
+      setPossibleData(filteredPossibleData); // Set the possible data
+      setOpen(true); // Open the dialog to show possible data
     } else {
       alert(`Please select a ${currentAttribute.label} first.`);
     }
@@ -131,53 +139,59 @@ const LeafAttributesSelection = () => {
           align="center"
           gutterBottom
           sx={{
-            fontFamily: "'Arial Black', Gadget, sans-serif",
+            fontFamily: "sans-serif",
             fontWeight: 'bold',
             color: '#000',
-            textShadow: '1px 1px 3px rgba(0,0,0,0.2)',
+            //textShadow: '1px 1px 3px rgba(0,0,0,0.2)',
+            marginTop: '95PX',
           }}
         >
           Please select your {currentAttribute.label}
+          <h2
+          style={{
+            color: 'black',
+            fontSize: '24px',
+            fontWeight: 'normal',
+            marginBottom: '0px',
+            align: "center",
+          }}
+        >
+          "various plant images, essential for research and species identification, as part of our botanical study collection."
+        </h2>
         </Typography>
-        <Grid container spacing={4} justifyContent="center">
+        
+
+        <Grid container spacing={6} sx={{padding: '130px',marginTop: '-85 px',}} justifyContent="center">
           {uniqueValues && uniqueValues.length > 0 ? (
             uniqueValues.map((value, index) => (
-              <Grid item key={index} xs={12} sm={6} md={4}>
+              <Grid item key={index} xs={12} sm={6} md={3} sx={{width: '100px',}}>
                 <Paper
                   elevation={5}
                   sx={{
-                    textAlign: 'center',
-                    padding: '20px',
-                    background: selectedValue === value
-                      ? 'linear-gradient(135deg, #c8e6f5 10%, #e4f9f4 100%)'
-                      : 'linear-gradient(135deg, #c8e6f5 10%, #e4f9f4 100%)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    padding: 0,
+                    background: '#fff',
                     cursor: 'pointer',
-                    borderRadius: '15px',
-                    border: selectedValue === value ? '2px solid #2ecc71' : '1px solid #ccc',
-                    boxShadow: selectedValue === value
-                      ? '0 12px 25px rgba(0, 0, 0, 0.3)'
-                      : '0 8px 15px rgba(0, 0, 0, 0.2)',
-                    transform: selectedValue === value ? 'scale(1.05)' : 'scale(1)',
-                    transition: 'transform 0.3s, background 0.3s, box-shadow 0.3s',
+                    borderRadius: '10px',
+                    border: '1.25px solid #B2F8DA', 
+                    boxShadow: '0 10px 20px rgba(0, 0, 0, 0.3)',
                     '&:hover': {
-                      background: 'linear-gradient(135deg, #a4d4e8 10%, #c0e7e1 100%)',
-                      transform: 'scale(1.05)',
-                      boxShadow: '0 12px 25px rgba(0, 0, 0, 0.3)',
+                      boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
                     },
-                    width: '280px', // Fixed width
-                    height: '230px', // Fixed height
+                    transition: 'box-shadow 0.3s',
                   }}
                   onClick={() => handleValueSelect(value)}
                 >
                   <img 
                     src={imageMap[value] || PlaceholderImage} // Use the image if available, otherwise placeholder
                     alt={value} 
-                    style={{ 
-                      width: '100%', 
-                      height: '150px',  // Adjusted height for the image
-                      objectFit: 'cover', // Ensures image covers the area
-                      borderRadius: '10px', 
-                      marginBottom: '15px' 
+                    style={{
+                      width: '70%',
+                      height: '200px', // Set a fixed height for images
+                      objectFit: 'cover',
+                      borderRadius: '10px 10px 0 0',
                     }}
                   />
                   <Typography
@@ -187,6 +201,8 @@ const LeafAttributesSelection = () => {
                       fontWeight: 'bold',
                       fontFamily: 'Poppins, sans-serif',
                       color: '#333',
+                      textAlign: 'center', // Center-aligned text
+                      padding: '30px', // Added padding
                     }}
                   >
                     {value}
@@ -215,7 +231,7 @@ const LeafAttributesSelection = () => {
             alignItems: 'center',
             '& > *': {
               marginBottom: isSmallScreen ? '10px' : '0',
-              marginRight: '10px', // Add some space between buttons
+              marginRight: '40px', // Add some space between buttons
               '&:last-child': {
                 marginRight: '0', // Remove margin from the last button
               },
@@ -236,11 +252,12 @@ const LeafAttributesSelection = () => {
           </Button>
           <Button
             variant="contained"
-            onClick={handleShowPossibleData}
+            onClick={handleShowPossibleData} // Show possible data dialog
           >
             SHOW POSSIBLE DATA
           </Button>
         </Box>
+        {/* Dialog for showing possible data */}
         <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
           <DialogTitle>Possible Data</DialogTitle>
           <DialogContent>

@@ -9,7 +9,7 @@ import ImageGallery from './ImageGallery';
 const FinalLeafSelection = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { finalFilteredData, selectedAttributes = {}, possibleData = [] } = location.state || {};
+  const { finalFilteredData, selectedAttributes = {}, possibleData = [] } = location.state || {}; // Get possibleData from location.state
 
   useEffect(() => {
     console.log('Selected Attributes:', selectedAttributes);
@@ -26,6 +26,7 @@ const FinalLeafSelection = () => {
     <div>
       <NavigationBar />
       <HeroSection />
+      {/* <ImageGallery /> */}
 
       <div style={{ padding: '20px' }}>
         <Typography
@@ -37,7 +38,7 @@ const FinalLeafSelection = () => {
           Final Leaf Selection
         </Typography>
 
-        <ImageGallery />
+       
 
         <Grid container spacing={4} justifyContent="center">
           {Object.entries(selectedAttributes).map(([attribute, value], index) => (

@@ -73,6 +73,9 @@ const DocumentView = () => {
   return (
     <div>
       <NavigationBar />
+      {/* Integrating ImageGallery here */}
+      <ImageGallery images={imageList} /> {/* Passing image list to the gallery */}
+
 
       <div style={{ padding: '20px' }}>
         <Typography
@@ -81,12 +84,10 @@ const DocumentView = () => {
           gutterBottom
           sx={{ fontFamily: 'Poppins, sans-serif', color: '#2c3e50' }}
         >
-          {speciesName} Document Content
+          {speciesName}
         </Typography>
 
-        {/* Integrating ImageGallery here */}
-        <ImageGallery images={imageList} /> {/* Passing image list to the gallery */}
-
+        
         <Box
           sx={{
             marginTop: '40px',
